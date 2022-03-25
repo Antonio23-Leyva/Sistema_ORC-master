@@ -39,6 +39,4 @@ exports.Orden = sequelize.define('ordenes', {
     }
 }); 
 
-
-
-
+sequelize.sync();

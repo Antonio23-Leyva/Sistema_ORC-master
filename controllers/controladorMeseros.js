@@ -1,41 +1,71 @@
 const modeloMesero = require('../models/Mesero');
 
-exports.addMeseros = (id, turno) => {
-    modeloMesero.Mesero.create({
-        idMesero: id,
-        turno: turno
-    })
-        .then( results =>{
-            console.log('[============ transaction succesfull ============');
-            console.log(results);
-            console.log('[================================================');
-
-        })
-        .catch(err =>{
-            console.log(err);
-        });  
-};
-
-exports.updateMeseros = (data, condition) =>{
-    modeloMesero.Mesero.update({campo:condition},{
-        where:{ params:data }
-    });
-};
-
-exports.deleteMeseros = (data) =>{
-    modeloMesero.Mesero.destroy({
-        where: {
-            categoria: data
-        }
-    });
-};
-
-exports.getMeseros = () =>{
-    modeloMesero.Mesero.findAll()
-        .then( results =>{
-            console.log(results);
-        })
-        .catch(err => {
-            console.log(err);
+exports.addWaiter = async(request, response) => {
+    try{
+        const results = await modeloMesero.Mesero.create(request.body);
+        response.status(201).json({
+            status: 'waiter add',
+            data : results
         });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed',
+            msg: error
+        });   
+    }
+};
+
+exports.updateWaiter = async(request, response) =>{
+    try{
+        const results = await modeloMesero.Mesero.update(request.body,{
+            where:
+        { 
+            idMesero : request.params.id 
+        }
+        });
+        response.status(201).json({
+            status: 'waiter update',
+            data: results
+        });
+    }catch(error){
+        response.status(201).json({
+            status: 'failed!',
+            msg: error
+        });
+    }  
+};
+
+exports.deleteWaiter = async(request, response) =>{
+    try{ 
+        const results = await modeloMesero.Mesero.destroy({
+            where: {
+                idMesero: request.params.id
+            }
+        });
+        response.status(201).json({
+            status: 'waiter deleted id:' + request.params.id,
+            data: results
+        });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed!',
+            msg: error
+        });
+    }  
+
+};
+
+exports.getWaiters = async(resquest, response) =>{
+    try{  
+        const results  = await modeloMesero.Mesero.findAll();
+        response.status(201).json({
+            status: 'transaction succesfull...',
+            data: results
+        });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed',
+            msg: error
+        });
+    }  
 };

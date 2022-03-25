@@ -1,62 +1,79 @@
-const modeloUsuario  = require ('../models/Usuarios');
+const modeloUsuario  = require ('../models/Usuario');
+const express = require('express');
 
 /* 
     [==============> USERS <==============]
 */
-exports.addUser = (idUsuario,rol,correo,contraseña) =>{
-    modeloUsuario.Usuario.create({
-        idUsuario:idUsuario,
-        rol: rol,
-        correo: correo,
-        contraseña: contraseña
-    })
-        .then( results => {
-            console.log(`User add sucefull ${results}`);
-        })
-        .catch(error => {
-            console.log(error);
+
+
+exports.addUser = async(request, response) => { 
+    try{ 
+        const results = await modeloUsuario.Usuario.create(request.body);
+        response.status(201).json({
+            status: 'User add',
+            data: results    
         });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed!',
+            msg: error
+        });
+    }  
 };
 
-/* 
-  data: informacion a actualizar
-  condition: Parametro del campo que se desea actualizar. 
-*/
-exports.updateUsuarios = (data,condition) =>{
-    modeloUsuario.Usuario.update({correo:data},{
-        // Condicion que se debe cumplir
-        where:{ correo:condition }
-    })
-        .then(results => {
-            console.log(`Upated${results}`);
-        })
-        .catch(error =>{
-            console.log(error);
+exports.updateUser= async(request, response) =>{
+    try{ 
+        const results = await modeloUsuario.Usuario.update(request.body, {
+            where:
+                { 
+                    idUsuario: request.params.id 
+                }
         });
+        response.status(201).json({
+            status: 'User updated',
+            data: results 
+        });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed!',
+            msg: error
+        });
+    }    
 };
 
-exports.deleteUsuarios = (data) =>{
-    modeloUsuario.Usuario.destroy({
-        // Condicion que se debe cumplir
-        where: {
-            correo: data
-        }
-    })
-        .then(results => {
-            console.log(`${results}`);
-        })
-        .catch(error =>{
-            console.log(error);
+exports.deleteUser = async(request, response) =>{
+    try{ 
+        const results = await modeloUsuario.Usuario.destroy({
+            where: {
+                idUsuario: request.params.id
+            }
         });
+        response.status(201).json({
+            status: 'User deleted id:'+ request.params.id,
+            data: results
+        });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed!',
+            msg: error
+        });
+    }  
 };
 
-exports.getUsuarios = () =>{
-    modeloUsuario.Usuario.findAll()
-        .then(results =>{
-            console.log('[==============> USERS <==============]');
-            console.log(results);
-        })
-        .catch(err => {
-            console.log(err);
+
+exports.getUsers = async(request,response) =>{
+    try {
+        const results = await modeloUsuario.Usuario.findAll();
+        response.status(201).json({
+            status: 'transaction succesfull...',
+            data: 
+                results
         });
+    } catch (error) {
+        response.status(500).json({
+            status: 'failed',
+            msg: error
+        });
+    }
 };
+

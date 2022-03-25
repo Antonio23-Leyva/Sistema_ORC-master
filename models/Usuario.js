@@ -12,7 +12,7 @@ exports.Usuario = sequelize.define('usuarios', {
     rol: {
         allowNull: false,
         type: Sequelize.STRING,
-        unique: true,
+        unique: false
     },
     correo: {
         allowNull: false,

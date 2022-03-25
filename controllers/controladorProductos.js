@@ -1,47 +1,79 @@
 const modeloProducto  = require ('../models/Producto');
+const { v1:uuid } = require('uuid');
+const express = require('express');
 
 /* 
     [==============> PRODUCTS <==============]
 */
-exports.addProducto = (idProducto, nombre, categoria, precio) => {
-    modeloProducto.Producto.create({
-        idProducto: idProducto,
-        nombre: nombre,
-        categoria: categoria,
-        precio: precio,
-    })
-        .then( results => {
-            console.log(results);
-        })
-        .catch( error => {
-            console.log(error);
+exports.addProduct = async(request, response) => { 
+    try{ 
+        const results = await modeloProducto.Producto.create(request.body);
+        response.status(201).json({
+            status: 'Product add',
+            data: results    
         });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed!',
+            msg: error
+        });
+    }  
 };
 
-exports.updateProductos = (data,condition) =>{
-    modeloProducto.Producto.update({campo:condition},
-        {
-            where:{ params:data }
+exports.updateProduct = async(request, response) =>{
+    try{ 
+        const results = await modeloProducto.Producto.update(request.body, {
+            where:
+                { 
+                    idProducto: request.params.id 
+                }
         });
+        response.status(201).json({
+            status: 'Product updated',
+            data: results 
+        });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed!',
+            msg: error
+        });
+    }    
 };
 
-exports.deleteProductos = (data) =>{
-    modeloProducto.Producto.destroy({
-        where: {
-            categoria: data
-        }
-    });
+exports.deleteProduct = async(request, response) =>{
+    try{ 
+        const results = await modeloProducto.Producto.destroy({
+            where: {
+                idProducto: request.params.id
+            }
+        });
+        response.status(201).json({
+            status: 'product deleted id:'+ request.params.id,
+            data: results
+        });
+    }catch(error){
+        response.status(500).json({
+            status: 'failed!',
+            msg: error
+        });
+    }  
 };
 
 
-exports.getProductos = () =>{
-    modeloProducto.Producto.findAll()
-        .then(results =>{
-            console.log(results);
-        })
-        .catch(err => {
-            console.log(err);
+exports.getProducts = async(request,response) =>{
+    try {
+        const results = await modeloProducto.Producto.findAll();
+        response.status(201).json({
+            status: 'transaction succesfull...',
+            data: 
+                results
         });
+    } catch (error) {
+        response.status(500).json({
+            status: 'failed',
+            msg: error
+        });
+    }
 };
 
 
