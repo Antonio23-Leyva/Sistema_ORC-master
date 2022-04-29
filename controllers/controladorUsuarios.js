@@ -1,57 +1,56 @@
 const modeloUsuario  = require ('../models/Usuario');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 
-/* 
-    [==============> USERS <==============]
-*/
-
-
-exports.addUser = async(request, response) => { 
+exports.updateUser = (request, response) =>{
     try{ 
-        const results = await modeloUsuario.Usuario.create(request.body);
-        response.status(201).json({
-            status: 'User add',
-            data: results    
-        });
-    }catch(error){
-        response.status(500).json({
-            status: 'failed!',
-            msg: error
-        });
-    }  
-};
-
-exports.updateUser= async(request, response) =>{
-    try{ 
-        const results = await modeloUsuario.Usuario.update(request.body, {
-            where:
+        jwt.verify(request.token, 'secretkey', (err, authData) => {
+            if(err){
+                response.status(403).send({
+                    code: 403,
+                    message: 'error'
+                });
+            }else{
+                const results = modeloUsuario.Usuario.update(request.body, {
+                    where:
                 { 
                     idUsuario: request.params.id 
                 }
+                });
+                response.status(201).json({
+                    status: 'User updated',
+                    data: results,
+                    authData
+                });
+            }
         });
-        response.status(201).json({
-            status: 'User updated',
-            data: results 
-        });
+            
+        
     }catch(error){
         response.status(500).json({
             status: 'failed!',
             msg: error
         });
     }    
-};
 
-exports.deleteUser = async(request, response) =>{
+};
+exports.deleteUser = (request, response) =>{
     try{ 
-        const results = await modeloUsuario.Usuario.destroy({
-            where: {
-                idUsuario: request.params.id
-            }
+        jwt.verify(request.token, 'secretkey', (err, authData) => {
+            const results = modeloUsuario.Usuario.destroy({
+                where: 
+                    {
+                        idUsuario: request.params.id
+                    }
+            });
+            response.json({
+                status: 'User deleted id: '+ request.params.id,
+                data: results,
+                authData             
+            });
+            
         });
-        response.status(201).json({
-            status: 'User deleted id:'+ request.params.id,
-            data: results
-        });
+
     }catch(error){
         response.status(500).json({
             status: 'failed!',
@@ -63,11 +62,10 @@ exports.deleteUser = async(request, response) =>{
 
 exports.getUsers = async(request,response) =>{
     try {
-        const results = await modeloUsuario.Usuario.findAll();
-        response.status(201).json({
-            status: 'transaction succesfull...',
-            data: 
-                results
+        const results = await modeloUsuario.Usuario.findAll({attributes:['idUsuario','rol','correo']});
+        
+        jwt.verify(request.token, 'secretkey',() => {
+            response.status(201).json(results); 
         });
     } catch (error) {
         response.status(500).json({
@@ -77,3 +75,23 @@ exports.getUsers = async(request,response) =>{
     }
 };
 
+// function searchForId(request, response){
+//     try{
+//         const findUser = modeloUsuario.Usuario.findOne(request.params.id,{
+//             where: 
+//             {
+//                 idUsuario: request.params.id
+//             }
+//         });
+        
+//         response.status(201).json({
+//             status: 'User finded', 
+//             data: findUser
+//         });    
+
+//     }catch(error){
+//         response.status(500).json({
+//             status: 'failed',
+//             msg: error
+//         });
+//     }

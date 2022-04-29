@@ -1,6 +1,5 @@
 const modeloProducto  = require ('../models/Producto');
-const { v1:uuid } = require('uuid');
-const express = require('express');
+
 
 /* 
     [==============> PRODUCTS <==============]
@@ -63,11 +62,7 @@ exports.deleteProduct = async(request, response) =>{
 exports.getProducts = async(request,response) =>{
     try {
         const results = await modeloProducto.Producto.findAll();
-        response.status(201).json({
-            status: 'transaction succesfull...',
-            data: 
-                results
-        });
+        response.status(201).json(results);
     } catch (error) {
         response.status(500).json({
             status: 'failed',

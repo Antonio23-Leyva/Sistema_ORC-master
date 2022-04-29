@@ -3,15 +3,12 @@ const modelOrders = require('../controllers/controladorOrdenes');
 const express = require('express');
 const router = express.Router();
 
+/*[=========== ORDERS ===========]*/
 router
-    .route('/')
-/*[=========== PRODUCTS ===========]*/ 
-    .get(modelOrders.getOrders)
-    .post(modelOrders.addOrder);
-router
-    .route('/:id')  
-    .put(modelOrders.updateOrder)
-    .delete(modelOrders.deleteOrder);
-      
+    .get('/all', modelOrders.getOrders)
+    .post('/add', modelOrders.addOrder)
+    .put('/:id', modelOrders.updateOrder)
+    .delete('/:id', modelOrders.deleteOrder);
+
 
 module.exports = router;

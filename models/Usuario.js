@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
-// Gestionar el tipo de user(Empleado,Gerente,Cajero).
 exports.Usuario = sequelize.define('usuarios', {
     idUsuario: {
         primaryKey: true,

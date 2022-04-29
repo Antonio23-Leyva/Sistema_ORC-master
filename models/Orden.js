@@ -3,13 +3,12 @@ const sequelize = require('../utils/database');
 
 exports.Orden = sequelize.define('ordenes', {
     idOrden: {
+        primaryKey: true,
         type: Sequelize.STRING,
         allowNull: false,
-        autoIncrement: true,
-        unique: true,
-        primaryKey: true,
+        autoIncrement: false
     },
-    nombreCliente: {
+    cliente: {
         type: Sequelize.STRING,
         allowNull: false
     },
@@ -18,25 +17,24 @@ exports.Orden = sequelize.define('ordenes', {
         allowNull: false
     },
     cantidad: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
         allowNull: false
     },
     fecha: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
     },
     hora: {
-        type: Sequelize.TIME,
+        type: Sequelize.STRING,
         allowNull: false
     },
     total: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.FLOAT,
         allowNull: false
     },
     estado: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.STRING,
         allowNull: false
     }
-}); 
 
-sequelize.sync();
+});
